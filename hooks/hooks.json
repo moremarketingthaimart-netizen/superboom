@@ -1,0 +1,46 @@
+{
+  "description": "superboom plugin hooks — copy relevant sections to your project's .claude/settings.local.json",
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "bash -c 'INPUT=$(cat); TOKENS=$(echo \"$INPUT\" | python3 -c \"import json,sys; d=json.load(sys.stdin); u=d.get(\\\"usage\\\",{}); print(u.get(\\\"input_tokens\\\",0)+u.get(\\\"output_tokens\\\",0))\" 2>/dev/null || echo 0); echo \"━━━ superboom | tokens used: $TOKENS / 200,000 ━━━\"'",
+        "description": "Show token usage summary on every stop"
+      },
+      {
+        "type": "command",
+        "command": "bash -c 'INPUT=$(cat); TOKENS=$(echo \"$INPUT\" | python3 -c \"import json,sys; d=json.load(sys.stdin); u=d.get(\\\"usage\\\",{}); print(u.get(\\\"input_tokens\\\",0)+u.get(\\\"output_tokens\\\",0))\" 2>/dev/null || echo 0); [ \"$TOKENS\" -gt 120000 ] 2>/dev/null && osascript -e \"display notification \\\"Token: $TOKENS/200k — run /compact\\\" with title \\\"superboom Token Alert\\\"\" 2>/dev/null; true'",
+        "description": "macOS notification when token usage exceeds 60% (120,000 tokens)"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "type": "command",
+        "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | python3 -c \"import json,sys; d=json.load(sys.stdin); i=d.get(\\\"tool_input\\\",{}); print(i.get(\\\"file_path\\\",i.get(\\\"path\\\",\\\"\\\")))\" 2>/dev/null); if echo \"$FILE\" | grep -qE \"\\\\.(ts|tsx|js|jsx)$\"; then npx prettier --write \"$FILE\" 2>/dev/null || true; fi; if echo \"$FILE\" | grep -qE \"\\\\.py$\"; then black \"$FILE\" 2>/dev/null || true; fi'",
+        "description": "Auto-format TypeScript/JavaScript (Prettier) and Python (Black) after Write/Edit"
+      },
+      {
+        "matcher": ".*",
+        "type": "command",
+        "command": "bash -c 'LOG_DIR=\"$HOME/.claude/logs\"; mkdir -p \"$LOG_DIR\"; INPUT=$(cat); TOOL=$(echo \"$INPUT\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d.get(\\\"tool_name\\\",\\\"unknown\\\"))\" 2>/dev/null || echo unknown); echo \"[$(date +%Y-%m-%dT%H:%M:%S)] tool=$TOOL\" >> \"$LOG_DIR/superboom-session-$(date +%Y-%m-%d).log\"'",
+        "description": "Log all tool calls to ~/.claude/logs/superboom-session-YYYY-MM-DD.log"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "type": "command",
+        "command": "bash -c 'INPUT=$(cat); CMD=$(echo \"$INPUT\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d.get(\\\"tool_input\\\",{}).get(\\\"command\\\",\\\"\\\"))\" 2>/dev/null || echo \"\"); PATTERNS=(\"rm -rf /\" \"git push --force origin main\" \"git push --force origin master\" \"git push -f origin main\" \"git push -f origin master\" \"DROP TABLE\" \"DROP DATABASE\" \"format c:\" \"dd if=\" \"mkfs\"); for p in \"${PATTERNS[@]}\"; do if echo \"$CMD\" | grep -qi \"$p\"; then echo \"{\\\"decision\\\": \\\"block\\\", \\\"reason\\\": \\\"superboom safety: blocked dangerous pattern: $p\\\"}\"; exit 0; fi; done'",
+        "description": "Block dangerous bash patterns before execution"
+      }
+    ],
+    "SubagentStop": [
+      {
+        "type": "command",
+        "command": "bash -c 'INPUT=$(cat); NAME=$(echo \"$INPUT\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d.get(\\\"agent_name\\\",\\\"unknown\\\"))\" 2>/dev/null || echo unknown); TOKENS=$(echo \"$INPUT\" | python3 -c \"import json,sys; d=json.load(sys.stdin); u=d.get(\\\"usage\\\",{}); print(u.get(\\\"input_tokens\\\",0)+u.get(\\\"output_tokens\\\",0))\" 2>/dev/null || echo 0); echo \"[superboom] subagent $NAME stopped | tokens: $TOKENS\"'",
+        "description": "Log subagent name and token cost when each subagent finishes"
+      }
+    ]
+  }
+}
