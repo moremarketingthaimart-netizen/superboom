@@ -1,10 +1,10 @@
 {
   "name": "superboom",
   "description": "Supercharge your Claude Code workflow with battle-tested Skills for multi-agent orchestration, GitHub Actions automation, parallel security audits, large-scale migrations, and more.",
-  "repository": "https://github.com/moremarketingthaimart/superboom",
-  "homepage": "https://github.com/moremarketingthaimart/superboom",
+  "repository": "https://github.com/moremarketingthaimart-netizen/superboom",
+  "homepage": "https://github.com/moremarketingthaimart-netizen/superboom",
   "version": "1.0.0",
-  "author": "moremarketingthaimart",
+  "author": "moremarketingthaimart-netizen",
   "license": "MIT",
   "tags": [
     "workflow",
@@ -16,7 +16,7 @@
     "productivity",
     "claude-code"
   ],
-  "install": "claude plugin install moremarketingthaimart/superboom",
+  "install": "claude plugin install moremarketingthaimart-netizen/superboom",
   "skills": [
     {
       "name": "workflow-setup",
