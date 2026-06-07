@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "superboom",
+  "displayName": "Superboom",
+  "version": "1.0.0",
+  "description": "Supercharge your Claude Code workflow — Skills for multi-agent orchestration, GitHub automation, parallel security audits, and large-scale migrations.",
+  "author": {
+    "name": "moremarketingthaimart-netizen",
+    "url": "https://github.com/moremarketingthaimart-netizen"
+  },
+  "homepage": "https://github.com/moremarketingthaimart-netizen/superboom",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "automation",
+    "multi-agent",
+    "github-actions",
+    "security",
+    "migration",
+    "claude-code"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "superboom",
+  "owner": { "name": "moremarketingthaimart-netizen" },
+  "plugins": [
+    {
+      "name": "superboom",
+      "source": "./plugins/superboom",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "workflow",
+        "automation",
+        "multi-agent",
+        "github-actions",
+        "security",
+        "migration",
+        "claude-code"
+      ]
+    }
+  ]
+}
